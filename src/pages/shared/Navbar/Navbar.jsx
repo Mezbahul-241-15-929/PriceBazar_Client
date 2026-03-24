@@ -3,7 +3,8 @@ import { FiMenu, FiX, FiHome, FiShoppingCart, FiInfo, FiMail, FiUser, FiSettings
 import { AiOutlineUser } from 'react-icons/ai';
 import { useState } from 'react';
 import useAuth from '../../../hooks/useAuth';
-import { useQuery } from '@tanstack/react-query';
+// import { useQuery } from '@tanstack/react-query';
+// import useAxiosSecure2 from '../../../hooks/useAxiosSecure2';
 
 
 
@@ -12,14 +13,14 @@ const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const { user, logOut } = useAuth();
 
-    const { data: profile } = useQuery({
-        queryKey: ["profile", user?.email],
-        enabled: !!user?.email,
-        queryFn: async () => {
-            const res = await axiosSecure.get(`/users/${user.email}`);
-            return res.data;
-        },
-    });
+    // const { data: profile } = useQuery({
+    //     queryKey: ["profile", user?.email],
+    //     enabled: !!user?.email,
+    //     queryFn: async () => {
+    //         const res = await useAxiosSecure2.get(`/users/${user.email}`);
+    //         return res.data;
+    //     },
+    // });
 
     const handleSignOut = () => {
         logOut().then(() => {
@@ -39,7 +40,7 @@ const Navbar = () => {
 
     const signInBtnClass = 'px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg hover:shadow-lg transition-all duration-300 flex items-center gap-2';
 
-    const signInBtnMobileClass = 'w-full px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2';
+    // const signInBtnMobileClass = 'w-full px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2';
 
     const links = (
         <>
@@ -84,7 +85,7 @@ const Navbar = () => {
                             to='/'
                             className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent hover:scale-105 transition-transform duration-300"
                         >
-                            Mezbahul
+                            PriceBazar
                         </NavLink>
                     </div>
 
@@ -115,7 +116,7 @@ const Navbar = () => {
 
                                             <div className="hidden lg:flex flex-col text-left">
                                                 <span className="text-sm font-medium  leading-tight">
-                                                    {profile?.displayName || 'Welcome'}
+                                                    {user?.displayName || 'Welcome'}
                                                 </span>
                                                 <span className="text-xs  leading-tight">
                                                     {user?.email || 'User'}
@@ -202,7 +203,7 @@ const Navbar = () => {
                                     </div>
                                     <div>
                                         <div className="font-medium text-gray-800">
-                                            {profile?.displayName || 'Welcome'}
+                                            {user?.displayName || 'Welcome'}
                                         </div>
                                         {user?.email && <div className="text-sm text-gray-500">{user.email}</div>}
                                     </div>
