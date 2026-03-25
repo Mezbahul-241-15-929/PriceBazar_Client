@@ -14,6 +14,7 @@ import Profile2 from "../pages/Profile/Profile2";
 import AdminLayout from "../layouts/DashboardLayout";
 import AllUsers from "../layouts/DashBoardComponents/AllUsers";
 import AddProuducts from "../layouts/DashBoardComponents/AddProuduct";
+import MyProducts from "../layouts/DashBoardComponents/MyProducts";
 
 export const router = createBrowserRouter([
     {
@@ -70,6 +71,10 @@ export const router = createBrowserRouter([
             {
                 path: '/dashboard/add-product',
                 Component: AddProuducts
+            },
+            {
+                path: '/dashboard/my-products',
+                Component: MyProducts
             }
 
         ]
