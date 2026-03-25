@@ -11,6 +11,9 @@ import Register from "../pages/Auth/Register/Register";
 import Profile from "../pages/Profile/Profile";
 import PrivateRoute from "./PrivateRoute";
 import Profile2 from "../pages/Profile/Profile2";
+import AdminLayout from "../layouts/DashboardLayout";
+import AllUsers from "../layouts/DashBoardComponents/AllUsers";
+import AddProuducts from "../layouts/DashBoardComponents/AddProuduct";
 
 export const router = createBrowserRouter([
     {
@@ -54,5 +57,22 @@ export const router = createBrowserRouter([
                 Component: Register
             }
         ]
+    },
+
+    {
+        path: '/dashboard',
+        Component: AdminLayout,
+        children: [
+            {
+                path: '/dashboard/all-users',
+                Component: AllUsers
+            },
+            {
+                path: '/dashboard/add-product',
+                Component: AddProuducts
+            }
+
+        ]
+
     },
 ]);

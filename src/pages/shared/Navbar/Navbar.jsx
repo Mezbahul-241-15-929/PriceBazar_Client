@@ -129,6 +129,11 @@ const Navbar = () => {
                                             className="menu menu-sm dropdown-content bg-white rounded-box z-10 mt-3 w-56 p-2 shadow-lg border"
                                         >
                                             <li>
+                                                <NavLink to="/dashboard" className="flex items-center gap-2 px-3 py-2 rounded hover:bg-gray-50">
+                                                    <FiUser /> Dashboard
+                                                </NavLink>
+                                            </li>
+                                            <li>
                                                 <NavLink to="/profile" className="flex items-center gap-2 px-3 py-2 rounded hover:bg-gray-50">
                                                     <FiUser /> Profile
                                                 </NavLink>
@@ -228,6 +233,15 @@ const Navbar = () => {
                             <div className="mt-4 border-t pt-4 flex flex-col gap-2">
                                 {user ? (
                                     <>
+                                        <NavLink
+                                            to="/dashboard"
+                                            onClick={() => setIsMenuOpen(false)}
+                                            className={({ isActive }) =>
+                                                `w-full text-left px-4 py-2 rounded-lg transition ${isActive ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white' : 'text-gray-700 hover:bg-gray-50'}`
+                                            }
+                                        >
+                                            Dashboard
+                                        </NavLink>
                                         <NavLink
                                             to="/profile"
                                             onClick={() => setIsMenuOpen(false)}
