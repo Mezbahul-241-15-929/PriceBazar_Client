@@ -1,12 +1,22 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
 import Swal from "sweetalert2";
-import { Link } from "react-router";
+import toast, { Toaster } from "react-hot-toast";
+import { useState } from "react";
 import useAuth from "../../hooks/useAuth";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 
 const MyProducts = () => {
     const { user } = useAuth();
     const axiosSecure = useAxiosSecure();
+    const [editingId, setEditingId] = useState(null);
+    const [editForm, setEditForm] = useState({
+        itemName: "",
+        marketName: "",
+        image: "",
+        price: "",
+        description: "",
+        date: "",
+    });
 
 
     const {
@@ -42,6 +52,26 @@ const MyProducts = () => {
         },
     });
 
+    // ✅ Update mutation
+    const updateMutation = useMutation({
+        mutationFn: async ({ id, payload }) => {
+            console.log("Sending PUT request with payload:", payload);
+            const res = await axiosSecure.put(`/products/${id}`, payload);
+            console.log("Response:", res.data);
+            return res.data;
+        },
+        onSuccess: (data) => {
+            console.log("Update successful:", data);
+            toast.success("Product updated successfully! 🎉");
+            setEditingId(null);
+            refetch();
+        },
+        onError: (error) => {
+            console.error("Update error:", error);
+            toast.error(error.response?.data?.message || "Failed to update product");
+        },
+    });
+
     // ✅ Handle delete
     const handleDelete = (id) => {
         Swal.fire({
@@ -56,6 +86,69 @@ const MyProducts = () => {
                 deleteMutation.mutate(id);
             }
         });
+    };
+
+    // ✅ Handle edit open - Load product data into form
+    const handleEditOpen = (product) => {
+        const latestPrice = product.prices?.[product.prices.length - 1];
+        setEditForm({
+            itemName: product.itemName || "",
+            marketName: product.marketName || "",
+            image: product.image || "",
+            price: latestPrice?.price ?? "",
+            description: product.description || "",
+            date: product.date || new Date().toISOString().split("T")[0],
+        });
+        setEditingId(product._id);
+    };
+
+    // ✅ Handle edit close
+    const handleEditClose = () => {
+        setEditingId(null);
+        setEditForm({
+            itemName: "",
+            marketName: "",
+            image: "",
+            price: "",
+            description: "",
+            date: "",
+        });
+    };
+
+    // ✅ Handle form field changes
+    const handleEditChange = (e) => {
+        const { name, value } = e.target;
+        setEditForm((prev) => ({ ...prev, [name]: value }));
+    };
+
+    // ✅ Handle edit form submit
+    const handleEditSubmit = (e) => {
+        e.preventDefault();
+        const product = products.find((p) => p._id === editingId);
+        if (!product) return;
+
+        const latestPrice = product.prices?.[product.prices.length - 1];
+        const newPrices = [...(product.prices || [])];
+        
+        // Add new price entry if price changed
+        if (String(editForm.price) !== String(latestPrice?.price)) {
+            newPrices.push({
+                price: editForm.price,
+                date: new Date().toISOString(),
+            });
+        }
+
+        const payload = {
+            ...product,
+            itemName: editForm.itemName,
+            marketName: editForm.marketName,
+            image: editForm.image,
+            description: editForm.description,
+            date: editForm.date,
+            prices: newPrices,
+        };
+
+        updateMutation.mutate({ id: editingId, payload });
     };
 
     if (isLoading) {
@@ -155,17 +248,17 @@ const MyProducts = () => {
                                             <td className="py-3 px-4 flex gap-2">
 
                                                 {/* Edit */}
-                                                <Link
-                                                    to={`/dashboard/edit-product/${product._id}`}
-                                                    className="px-3 py-1 bg-blue-500 text-white rounded-lg text-xs"
+                                                <button
+                                                    onClick={() => handleEditOpen(product)}
+                                                    className="px-3 py-1 bg-blue-500 text-white rounded-lg text-xs hover:bg-blue-600"
                                                 >
                                                     Edit
-                                                </Link>
+                                                </button>
 
                                                 {/* Delete */}
                                                 <button
                                                     onClick={() => handleDelete(product._id)}
-                                                    className="px-3 py-1 bg-red-500 text-white rounded-lg text-xs"
+                                                    className="px-3 py-1 bg-red-500 text-white rounded-lg text-xs hover:bg-red-600"
                                                 >
                                                     Delete
                                                 </button>
@@ -181,6 +274,133 @@ const MyProducts = () => {
 
                 </div>
             </div>
+
+            {/* Edit Modal Popup */}
+            {editingId && (
+                <div className="fixed inset-0 border-black border bg-opacity-10 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+                        <div className="p-6 sm:p-8">
+                            <h2 className="text-2xl font-bold mb-6 text-gray-800">
+                                ✏️ Edit Product
+                            </h2>
+                            
+                            <form onSubmit={handleEditSubmit} className="space-y-6">
+
+                                {/* Market Info */}
+                                <div className="grid sm:grid-cols-2 gap-4">
+                                    <input
+                                        type="text"
+                                        name="marketName"
+                                        value={editForm.marketName}
+                                        onChange={handleEditChange}
+                                        placeholder="🏪 Market Name"
+                                        className="input"
+                                        required
+                                    />
+
+                                    <input
+                                        type="date"
+                                        name="date"
+                                        value={editForm.date}
+                                        onChange={handleEditChange}
+                                        className="input"
+                                        required
+                                    />
+                                </div>
+
+                                {/* Description */}
+                                <textarea
+                                    name="description"
+                                    value={editForm.description}
+                                    onChange={handleEditChange}
+                                    placeholder="📝 Market Description"
+                                    className="input h-24"
+                                />
+
+                                {/* Item + Image */}
+                                <div className="grid sm:grid-cols-2 gap-4">
+                                    <input
+                                        type="text"
+                                        name="itemName"
+                                        value={editForm.itemName}
+                                        onChange={handleEditChange}
+                                        placeholder="🥦 Item Name"
+                                        className="input"
+                                        required
+                                    />
+
+                                    <input
+                                        type="text"
+                                        name="image"
+                                        value={editForm.image}
+                                        onChange={handleEditChange}
+                                        placeholder="🖼️ Image URL"
+                                        className="input"
+                                    />
+                                </div>
+
+                                {/* Image Preview */}
+                                {editForm.image && (
+                                    <div className="flex justify-center">
+                                        <img 
+                                            src={editForm.image} 
+                                            alt="preview" 
+                                            className="w-32 h-32 rounded-lg object-cover border-2 border-gray-300"
+                                        />
+                                    </div>
+                                )}
+
+                                {/* Price */}
+                                <input
+                                    type="number"
+                                    step="0.01"
+                                    name="price"
+                                    value={editForm.price}
+                                    onChange={handleEditChange}
+                                    placeholder="💵 Today Price"
+                                    className="input"
+                                    required
+                                />
+
+                                {/* Buttons */}
+                                <div className="flex gap-3 pt-4">
+                                    <button
+                                        type="submit"
+                                        disabled={updateMutation.isPending}
+                                        className="cursor-pointer flex-1 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl font-semibold hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        {updateMutation.isPending ? "Saving..." : "Save Changes"}
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={handleEditClose}
+                                        className="cursor-pointer flex-1 py-3 bg-gray-300 text-gray-800 rounded-xl font-semibold hover:bg-gray-400"
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            <style>
+                {`
+                    .input {
+                        width: 100%;
+                        padding: 10px;
+                        border: 1px solid #e5e7eb;
+                        border-radius: 10px;
+                        outline: none;
+                    }
+                    .input:focus {
+                        border-color: #3b82f6;
+                        box-shadow: 0 0 0 2px rgba(59,130,246,0.2);
+                    }
+                `}
+            </style>
+            <Toaster position="top-right" />
         </div>
     );
 };
