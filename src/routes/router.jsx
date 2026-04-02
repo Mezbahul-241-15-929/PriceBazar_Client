@@ -15,6 +15,10 @@ import AdminLayout from "../layouts/DashboardLayout";
 import AllUsers from "../layouts/DashBoardComponents/AllUsers";
 import AddProuducts from "../layouts/DashBoardComponents/AddProuduct";
 import MyProducts from "../layouts/DashBoardComponents/MyProducts";
+import AddAdvertisement from "../layouts/DashBoardComponents/AddAdvertisement";
+import MyAdvertisements from "../layouts/DashBoardComponents/MyAdvertisements";
+import AllProducts from "../layouts/DashBoardComponents/AllProducts";
+import AllAdvertisements from "../layouts/DashBoardComponents/AllAdvertisements";
 
 export const router = createBrowserRouter([
     {
@@ -69,12 +73,28 @@ export const router = createBrowserRouter([
                 Component: AllUsers
             },
             {
+                path: '/dashboard/all-product',
+                Component: AllProducts
+            },
+            {
                 path: '/dashboard/add-product',
                 Component: AddProuducts
             },
             {
                 path: '/dashboard/my-products',
                 Component: MyProducts
+            },
+            {
+                path: '/dashboard/all-ads',
+                Component: AllAdvertisements
+            },
+            {
+                path: '/dashboard/add-advertisement',
+                Component: AddAdvertisement
+            },
+            {
+                path: '/dashboard/my-advertisements',
+                Component: MyAdvertisements
             }
 
         ]

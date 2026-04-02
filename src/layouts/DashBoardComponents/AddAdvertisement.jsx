@@ -4,7 +4,7 @@ import useAxiosSecure from "../../hooks/useAxiosSecure";
 import useAuth from "../../hooks/useAuth";
 import toast, { Toaster } from "react-hot-toast";
 
-const AddProduct = () => {
+const AddAdvertisement = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
 
@@ -14,18 +14,18 @@ const AddProduct = () => {
     },
   });
 
-  // ✅ Mutation
+  // ✅ Mutation for creating advertisement
   const mutation = useMutation({
     mutationFn: async (data) => {
-      const res = await axiosSecure.post("/products", data);
+      const res = await axiosSecure.post("/advertisements", data);
       return res.data;
     },
     onSuccess: () => {
-      toast.success("Product added successfully! 🎉");
+      toast.success("Advertisement created successfully! 🎉");
       reset();
     },
     onError: (error) => {
-      toast.error(error.response?.data?.message || "Failed to add product");
+      toast.error(error.response?.data?.message || "Failed to create advertisement");
     },
   });
 
@@ -45,7 +45,7 @@ const AddProduct = () => {
       <div className="bg-white shadow-xl rounded-2xl p-5 sm:p-8 border border-gray-100">
 
         <h2 className="text-2xl font-bold mb-6 text-gray-800">
-          📝 Add Product
+          📢 Add Advertisement
         </h2>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -55,74 +55,48 @@ const AddProduct = () => {
             <input
               value={user?.email || ""}
               readOnly
-              className="input"
+              className="input bg-gray-100"
+              placeholder="Email"
             />
             <input
               value={user?.displayName || ""}
               readOnly
-              className="input"
-            />
-          </div>
-
-          {/* Market Info */}
-          <div className="grid sm:grid-cols-2 gap-4">
-            <input
-              {...register("marketName", { required: true })}
-              placeholder="🏪 Market Name"
-              className="input"
-            />
-
-            <input
-              type="date"
-              value={new Date().toISOString().split("T")[0]}
-              readOnly
               className="input bg-gray-100"
+              placeholder="Vendor Name"
             />
           </div>
 
-          {/* Description */}
+          {/* Ad Title */}
+          <input
+            {...register("adTitle", { required: true })}
+            placeholder="📝 Advertisement Title"
+            className="input"
+          />
+
+          {/* Short Description */}
           <textarea
-            {...register("description")}
-            placeholder="📝 Market Description"
+            {...register("shortDescription", { required: true })}
+            placeholder="📄 Short Description"
             className="input h-24"
           />
 
-          {/* Item + Image */}
-          <div className="grid sm:grid-cols-2 gap-4">
-            <input
-              {...register("itemName", { required: true })}
-              placeholder="🥦 Item Name"
-              className="input"
-            />
-
-            <input
-              {...register("image")}
-              placeholder="🖼️ Image URL"
-              className="input"
-            />
-          </div>
-
-          {/* Price Per Unit */}
+          {/* Image URL */}
           <input
-            {...register("pricePerUnit", { required: true })}
-            placeholder="💵 Price per Unit (৳30/kg)"
+            {...register("image")}
+            placeholder="🖼️ Image URL (Banner or Promotional Image)"
             className="input"
           />
 
-          {/* ✅ ONLY ONE PRICE INPUT */}
-          <input
-            type="number"
-            {...register("price", { required: true })}
-            placeholder="💵 Today Price"
-            className="input"
-          />
+          {/* Image Preview */}
+          {/* Note: To show preview, you'd need to use useWatch or state */}
 
           {/* Submit */}
           <button
             type="submit"
-            className="cursor-pointer w-full py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl font-semibold hover:opacity-90"
+            disabled={mutation.isPending}
+            className="cursor-pointer w-full py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl font-semibold hover:opacity-90 disabled:opacity-50"
           >
-            Submit Product
+            {mutation.isPending ? "Creating..." : "Create Advertisement"}
           </button>
 
         </form>
@@ -148,4 +122,4 @@ const AddProduct = () => {
   );
 };
 
-export default AddProduct;
+export default AddAdvertisement;
