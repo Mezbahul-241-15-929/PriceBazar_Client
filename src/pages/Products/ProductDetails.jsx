@@ -1,0 +1,316 @@
+import React, { useState } from 'react';
+import { useParams, useNavigate } from 'react-router';
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
+import { FaArrowLeft, FaMapMarkerAlt, FaCalendarAlt, FaUser, FaPhone, FaStar, FaBookmark, FaShoppingCart, FaCarrot, FaEnvelope } from 'react-icons/fa';
+import toast from 'react-hot-toast';
+import Loading from '../../components/Loading/Loading';
+import useAuth from '../../hooks/useAuth';
+
+const ProductDetails = () => {
+    const { id } = useParams();
+    const navigate = useNavigate();
+    const { user } = useAuth();
+    const [isWatchlisted, setIsWatchlisted] = useState(false);
+    const [newComment, setNewComment] = useState('');
+    const [comments, setComments] = useState([]);
+
+    // Fetch product details
+    const { data: product = {}, isLoading, error } = useQuery({
+        queryKey: ['productDetails', id],
+        queryFn: async () => {
+            const response = await axios.get(`http://localhost:3000/api/products/${id}`);
+            return response.data;
+        },
+    });
+
+    // Format date
+    const formatDate = (dateString) => {
+        if (!dateString) return 'N/A';
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    };
+
+    // Check if price is recent
+    const isRecentPrice = (priceDate) => {
+        if (!priceDate) return false;
+        const priceDateObj = new Date(priceDate);
+        const today = new Date();
+        const diffTime = Math.abs(today - priceDateObj);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        return diffDays <= 7;
+    };
+
+    // Get latest price from product
+    const getLatestPrice = (product) => {
+        if (!product.prices || product.prices.length === 0) {
+            return 'N/A';
+        }
+        const sorted = [...product.prices].sort((a, b) => new Date(b.date) - new Date(a.date));
+        return sorted[0].price;
+    };
+
+    // Get latest date from product
+    const getLatestDate = (product) => {
+        if (!product.prices || product.prices.length === 0) {
+            return 'N/A';
+        }
+        const sorted = [...product.prices].sort((a, b) => new Date(b.date) - new Date(a.date));
+        return sorted[0].date;
+    };
+
+    // Handle contact vendor
+    const handleContactVendor = () => {
+        toast.success(`Contact ${product.vendorName} for more information!`);
+        // You can add WhatsApp, email, or phone integration here
+    };
+
+    // Handle watchlist toggle
+    const handleWatchlist = () => {
+        if (!user) {
+            toast.error('Please login to add to watchlist');
+            navigate('/login');
+            return;
+        }
+        setIsWatchlisted(!isWatchlisted);
+        toast.success(isWatchlisted ? 'Removed from watchlist' : 'Added to watchlist');
+    };
+
+    // Handle buy product
+    const handleBuyProduct = () => {
+        if (!user) {
+            toast.error('Please login to buy products');
+            navigate('/login');
+            return;
+        }
+        toast.success('Product added to cart!');
+    };
+
+    // Handle add comment
+    const handleAddComment = () => {
+        if (!user) {
+            toast.error('Please login to add comments');
+            navigate('/login');
+            return;
+        }
+        if (!newComment.trim()) {
+            toast.error('Please write a comment');
+            return;
+        }
+        const comment = {
+            id: Date.now(),
+            author: user.displayName || 'Anonymous',
+            text: newComment,
+            rating: 5,
+            date: new Date().toLocaleDateString()
+        };
+        setComments([comment, ...comments]);
+        setNewComment('');
+        toast.success('Comment added!');
+    };
+
+    if (isLoading) {
+        return <Loading />;
+    }
+
+    if (error) {
+        return (
+            <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+                <div className="text-center">
+                    <h1 className="text-3xl font-bold text-red-600 mb-4">Error Loading Product</h1>
+                    <p className="text-gray-600 mb-6">The product you're looking for doesn't exist or is no longer available.</p>
+                    <button
+                        onClick={() => navigate('/products')}
+                        className="bg-linear-to-r from-emerald-500 to-teal-600 text-white font-bold py-2 px-6 rounded-lg hover:from-emerald-600 hover:to-teal-700 transition-all"
+                    >
+                        Back to Products
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
+    return (
+        <div className="min-h-screen bg-gray-50 py-8 px-4 md:px-8">
+            <div className="max-w-7xl mx-auto">
+                {/* Back Button */}
+                <button
+                    onClick={() => navigate(-1)}
+                    className="flex items-center gap-2 text-emerald-600 hover:text-emerald-700 font-semibold mb-6 transition-colors"
+                >
+                    <FaArrowLeft />
+                    Go Back
+                </button>
+
+                <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-6 md:p-10">
+                        {/* Product Image */}
+                        <div className="flex items-center justify-center">
+                            <div className="relative w-full aspect-square rounded-lg overflow-hidden bg-gray-200">
+                                <img
+                                    src={product.image || 'https://via.placeholder.com/500x500?text=No+Image'}
+                                    alt={product.itemName}
+                                    className="w-full h-full object-cover"
+                                />
+                                {product.status === 'approved' && (
+                                    <div className="absolute top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-full font-semibold text-sm">
+                                        ✓ Approved
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Product Info */}
+                        <div className="flex flex-col justify-between">
+                            {/* Header */}
+                            <div>
+                                <h1 className="text-4xl font-bold text-gray-900 mb-2">
+                                    {product.itemName}
+                                </h1>
+                                
+                                {/* Current Price */}
+                                <div className="mb-6 p-3 bg-linear-to-r from-emerald-100 to-teal-100 rounded-lg border-2 border-emerald-500">
+                                    <p className="text-xs text-gray-600 font-semibold mb-1">Current Price</p>
+                                    <p className="text-2xl font-bold text-emerald-600">
+                                        ৳{getLatestPrice(product)}
+                                        <span className="text-sm text-gray-600 ml-2">/kg</span>
+                                    </p>
+                                    <p className="text-xs text-gray-600 mt-1">
+                                        {getLatestDate(product) !== 'N/A' ? new Date(getLatestDate(product)).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A'}
+                                    </p>
+                                </div>
+                                
+                                {/* Market Info */}
+                                <div className="flex items-center gap-2 text-gray-700 mb-6">
+                                    <FaMapMarkerAlt className="text-red-500" />
+                                    <span className="text-lg font-semibold">{product.marketName}</span>
+                                </div>
+
+                                {/* Description */}
+                                {product.description && (
+                                    <div className="mb-6">
+                                        <h3 className="text-lg font-bold text-gray-800 mb-2">Description</h3>
+                                        <p className="text-gray-700 leading-relaxed">{product.description}</p>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Vendor Info */}
+                            <div className="bg-linear-to-r from-emerald-50 to-teal-50 p-3 rounded-lg border border-emerald-200 mt-6">
+                                <h3 className="text-sm font-bold text-gray-800 mb-2">Vendor Information</h3>
+                                <div className="flex flex-col gap-1">
+                                    <div className="flex items-center gap-2">
+                                        <FaUser className="text-emerald-600 shrink-0" />
+                                        <span className="text-gray-700">{product.vendorName || 'Local Farmer'}</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <FaEnvelope className="text-emerald-600 shrink-0" />
+                                        <span className="text-gray-700">{product.vendorEmail || 'vendor@example.com'}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Action Buttons - Right Side */}
+                            <div className="flex flex-row gap-2 mt-6">
+                                {/* Buy Button */}
+                                <button
+                                    onClick={handleBuyProduct}
+                                    className="flex-1 flex items-center justify-center gap-2 bg-linear-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg text-sm"
+                                >
+                                    <FaShoppingCart />
+                                    Buy Product
+                                </button>
+
+                                {/* Watchlist Button - Disabled for admin/vendor */}
+                                <button
+                                    onClick={handleWatchlist}
+                                    disabled={user && (user.role === 'admin' || user.role === 'vendor')}
+                                    className={`flex-1 flex items-center justify-center gap-2 font-bold py-3 px-4 rounded-lg transition-all duration-300 shadow-md text-sm ${
+                                        isWatchlisted
+                                            ? 'bg-yellow-500 hover:bg-yellow-600 text-white'
+                                            : user && (user.role === 'admin' || user.role === 'vendor')
+                                            ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
+                                            : 'bg-gray-200 hover:bg-gray-300 text-gray-800'
+                                    }`}
+                                >
+                                    <FaBookmark />
+                                    {isWatchlisted ? 'In Watchlist' : 'Add to Watchlist'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="bg-white p-6 md:p-10 border-t border-gray-200">
+                        {/* User Reviews/Comments Section */}
+                        <div className="pt-6">
+                            <h3 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                                <FaStar className="text-yellow-500" />
+                                User Reviews & Comments
+                            </h3>
+
+                            {/* Add Comment Form */}
+                            <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 mb-6">
+                                <h4 className="text-lg font-bold text-gray-800 mb-3">
+                                    {user ? `${user.displayName || 'You'}, add a comment` : 'Login to add a comment'}
+                                </h4>
+                                <div className="flex gap-3">
+                                    <textarea
+                                        value={newComment}
+                                        onChange={(e) => setNewComment(e.target.value)}
+                                        placeholder="Share your experience with this product..."
+                                        className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none"
+                                        rows="3"
+                                    />
+                                    <button
+                                        onClick={handleAddComment}
+                                        className="bg-linear-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 self-end whitespace-nowrap"
+                                    >
+                                        Post
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Comments List */}
+                            <div className="space-y-4">
+                                {comments.length > 0 ? (
+                                    comments.map((comment) => (
+                                        <div key={comment.id} className="bg-white p-4 rounded-lg border border-gray-200 hover:shadow-md transition">
+                                            <div className="flex items-start gap-3">
+                                                <div className="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center text-white font-bold shrink-0">
+                                                    {comment.author.charAt(0).toUpperCase()}
+                                                </div>
+                                                <div className="flex-1">
+                                                    <div className="flex items-center justify-between mb-1">
+                                                        <h4 className="font-bold text-gray-900">{comment.author}</h4>
+                                                        <span className="text-xs text-gray-500">{comment.date}</span>
+                                                    </div>
+                                                    <div className="flex items-center gap-1 mb-2">
+                                                        {[...Array(5)].map((_, i) => (
+                                                            <FaStar key={i} className={i < comment.rating ? 'text-yellow-500' : 'text-gray-300'} size={14} />
+                                                        ))}
+                                                    </div>
+                                                    <p className="text-gray-700">{comment.text}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <p className="text-center text-gray-500 py-8">No comments yet. Be the first to share your experience!</p>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default ProductDetails;

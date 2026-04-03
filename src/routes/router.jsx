@@ -3,6 +3,7 @@ import RootLayout from "../layouts/RootLayout";
 import { Component } from "react";
 import Home from "../pages/Home/Home/Home";
 import Products from "../pages/Products/Products";
+import ProductDetails from "../pages/Products/ProductDetails";
 import About from "../pages/About/About";
 import Contact from "../pages/Contact/Contact";
 import AuthLayout from "../layouts/AuthLayout";
@@ -32,6 +33,10 @@ export const router = createBrowserRouter([
             {
                 path: "/products",
                 Component: Products
+            },
+            {
+                path: "/product-details/:id",
+                element: <PrivateRoute><ProductDetails /></PrivateRoute>
             },
             {
                 path: "/about",

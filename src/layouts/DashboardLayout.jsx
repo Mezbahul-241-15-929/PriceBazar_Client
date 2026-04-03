@@ -30,7 +30,7 @@ const DashboardLayout = () => {
     const menuItemClass = (path, isCollapsed = false) =>
         `w-full py-2 rounded-lg transition flex items-center gap-2 ${isCollapsed ? "justify-center px-2" : "text-left px-4"
         } ${pathname === path
-            ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow"
+            ? "bg-linear-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow"
             : "hover:bg-gray-100 text-gray-700"
         }`;
 
@@ -76,12 +76,12 @@ const DashboardLayout = () => {
                                     {/* ================= MOBILE MENU ================= */}
                                     <div className="lg:hidden">
                                         <div className={`overflow-hidden transition-all duration-300 ${isMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}`}>
-                                            <div className="mt-2 rounded-xl bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-100 p-3">
+                                            <div className="mt-2 rounded-xl bg-linear-to-r from-emerald-50 to-teal-50 border border-emerald-100 p-3">
                                                 <div className="flex flex-col gap-2">
 
                                                     {/* Dashboard always */}
                                                     <Link to="/dashboard" onClick={() => setIsMenuOpen(false)}
-                                                        className={`${menuItemClass("/dashboard")} bg-indigo-50 border border-indigo-100`}>
+                                                        className={`${menuItemClass("/dashboard")} bg-emerald-50 border border-emerald-100`}>
                                                         <FiHome size={16} /> Dashboard
                                                     </Link>
 
@@ -144,7 +144,7 @@ const DashboardLayout = () => {
 
                                             {/* Dashboard always */}
                                             <Link to="/dashboard"
-                                                className={`${menuItemClass("/dashboard", isDesktopCollapsed)} bg-indigo-50 border border-indigo-100`}>
+                                                className={`${menuItemClass("/dashboard", isDesktopCollapsed)} bg-emerald-50 border border-emerald-100`}>
                                                 <FiHome size={16} />
                                                 {!isDesktopCollapsed && "Dashboard"}
                                             </Link>

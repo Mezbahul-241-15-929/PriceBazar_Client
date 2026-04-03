@@ -34,11 +34,11 @@ const Navbar = () => {
     // Central Tailwind CSS classes
     const getLinkClass = (isActive) =>
         `flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-300 ${isActive
-            ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg'
+            ? 'bg-linear-to-r from-emerald-500 to-teal-600 text-white shadow-lg'
             : 'text-gray-700 hover:bg-gray-100'
         }`;
 
-    const signInBtnClass = 'px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg hover:shadow-lg transition-all duration-300 flex items-center gap-2';
+    const signInBtnClass = 'px-4 py-2 bg-linear-to-r from-emerald-500 to-teal-600 text-white rounded-lg hover:shadow-lg transition-all duration-300 flex items-center gap-2';
 
     // const signInBtnMobileClass = 'w-full px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2';
 
@@ -83,7 +83,7 @@ const Navbar = () => {
                     <div className="flex-shrink-0">
                         <NavLink
                             to='/'
-                            className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent hover:scale-105 transition-transform duration-300"
+                            className="text-2xl font-bold bg-linear-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent hover:scale-105 transition-transform duration-300"
                         >
                             PriceBazar
                         </NavLink>
@@ -101,7 +101,7 @@ const Navbar = () => {
                                 <div className="flex items-center gap-3">
                                     {/* Avatar + name (dropdown trigger) */}
                                     <div className="dropdown dropdown-end ">
-                                        <label tabIndex={0} className="bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg flex items-center gap-3 cursor-pointer p-1 lg:pr-5 rounded-full hover:bg-gray-100 transition">
+                                        <label tabIndex={0} className="bg-linear-to-r from-emerald-500 to-teal-600 text-white shadow-lg flex items-center gap-3 cursor-pointer p-1 lg:pr-5 rounded-full hover:bg-gray-100 transition">
                                             <div className="relative">
                                                 <div className="w-10 h-10 rounded-full overflow-hidden ring-1 ring-gray-100 shadow-sm">
                                                     <img
@@ -237,7 +237,7 @@ const Navbar = () => {
                                             to="/dashboard"
                                             onClick={() => setIsMenuOpen(false)}
                                             className={({ isActive }) =>
-                                                `w-full text-left px-4 py-2 rounded-lg transition ${isActive ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white' : 'text-gray-700 hover:bg-gray-50'}`
+                                                `w-full text-left px-4 py-2 rounded-lg transition ${isActive ? 'bg-linear-to-r from-emerald-500 to-teal-600 text-white' : 'text-gray-700 hover:bg-gray-50'}`
                                             }
                                         >
                                             Dashboard
@@ -246,7 +246,7 @@ const Navbar = () => {
                                             to="/profile"
                                             onClick={() => setIsMenuOpen(false)}
                                             className={({ isActive }) =>
-                                                `w-full text-left px-4 py-2 rounded-lg transition ${isActive ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white' : 'text-gray-700 hover:bg-gray-50'}`
+                                                `w-full text-left px-4 py-2 rounded-lg transition ${isActive ? 'bg-linear-to-r from-emerald-500 to-teal-600 text-white' : 'text-gray-700 hover:bg-gray-50'}`
                                             }
                                         >
                                             Profile
@@ -256,7 +256,7 @@ const Navbar = () => {
                                             to="/settings"
                                             onClick={() => setIsMenuOpen(false)}
                                             className={({ isActive }) =>
-                                                `w-full text-left px-4 py-2 rounded-lg transition ${isActive ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white' : 'text-gray-700 hover:bg-gray-50'}`
+                                                `w-full text-left px-4 py-2 rounded-lg transition ${isActive ? 'bg-linear-to-r from-emerald-500 to-teal-600 text-white' : 'text-gray-700 hover:bg-gray-50'}`
                                             }
                                         >
                                             Settings
@@ -274,7 +274,7 @@ const Navbar = () => {
                                     </>
                                 ) : (
                                     <Link to="login" onClick={() => setIsMenuOpen(false)}>
-                                        <button className="cursor-pointer w-full px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg">
+                                        <button className="cursor-pointer w-full px-4 py-2 bg-linear-to-r from-emerald-500 to-teal-600 text-white rounded-lg">
                                             <AiOutlineUser size={18} className="inline-block mr-2" /> Sign In
                                         </button>
                                     </Link>
