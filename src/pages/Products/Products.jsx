@@ -5,6 +5,7 @@ import axios from 'axios';
 import { FaMapMarkerAlt, FaCalendarAlt, FaUser, FaArrowRight, FaLock, FaFilter, FaSort } from 'react-icons/fa';
 import useAuth from '../../hooks/useAuth';
 import toast from 'react-hot-toast';
+import { motion } from 'framer-motion';
 
 const Products = () => {
     const navigate = useNavigate();
@@ -132,12 +133,22 @@ const Products = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 py-8 px-4 md:px-8">
+        <motion.div 
+            className="min-h-screen bg-gray-50 py-8 px-4 md:px-8"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+        >
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
 
                 {/* Filters and Sorting Section */}
-                <div className="mb-8 bg-white rounded-lg shadow-md p-4">
+                <motion.div 
+                    className="mb-8 bg-white rounded-lg shadow-md p-4"
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ duration: 0.5, delay: 0.1 }}
+                >
                     {/* Top Row - Search and Sort */}
                     <div className="flex flex-col md:flex-row gap-3 items-center justify-between mb-4">
                         {/* Search Bar */}
@@ -222,7 +233,7 @@ const Products = () => {
                             </div>
                         </div>
                     )}
-                </div>
+                </motion.div>
 
                 {/* Products List */}
                 {isLoading ? (
@@ -232,10 +243,18 @@ const Products = () => {
                         ))}
                     </div>
                 ) : products.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {products.map((product) => (
-                            <div
+                    <motion.div 
+                        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.5, delay: 0.2 }}
+                    >
+                        {products.map((product, index) => (
+                            <motion.div
                                 key={product._id}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.5, delay: index * 0.05 }}
                                 className="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden group"
                             >
                                 {/* Product Image */}
@@ -291,22 +310,13 @@ const Products = () => {
                                         onClick={() => handleViewDetails(product._id)}
                                         className="w-full bg-linear-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold py-2 px-4 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 group"
                                     >
-                                        {user ? (
-                                            <>
-                                                View Details
-                                                <FaArrowRight className="group-hover:translate-x-1 transition-transform duration-300" />
-                                            </>
-                                        ) : (
-                                            <>
-                                                <FaLock className="text-sm" />
-                                                Login to View
-                                            </>
-                                        )}
+                                        View Details
+                                        <FaArrowRight className="group-hover:translate-x-1 transition-transform duration-300" />
                                     </button>
                                 </div>
-                            </div>
+                            </motion.div>
                         ))}
-                    </div>
+                    </motion.div>
                 ) : (
                     <div className="text-center py-12 bg-white rounded-lg shadow-md">
                         <p className="text-gray-600 text-lg">No products found matching your filters.</p>
@@ -326,7 +336,7 @@ const Products = () => {
                     </div>
                 )}
             </div>
-        </div>
+        </motion.div>
     );
 };
 

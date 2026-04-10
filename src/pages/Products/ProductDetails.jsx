@@ -6,6 +6,7 @@ import { FaArrowLeft, FaMapMarkerAlt, FaCalendarAlt, FaUser, FaPhone, FaStar, Fa
 import toast from 'react-hot-toast';
 import Loading from '../../components/Loading/Loading';
 import useAuth from '../../hooks/useAuth';
+import { motion } from 'framer-motion';
 
 const ProductDetails = () => {
     const { id } = useParams();
@@ -137,21 +138,39 @@ const ProductDetails = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 py-8 px-4 md:px-8">
+        <motion.div 
+            className="min-h-screen bg-gray-50 py-8 px-4 md:px-8"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+        >
             <div className="max-w-7xl mx-auto">
                 {/* Back Button */}
-                <button
+                <motion.button
                     onClick={() => navigate(-1)}
                     className="flex items-center gap-2 text-emerald-600 hover:text-emerald-700 font-semibold mb-6 transition-colors"
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3 }}
                 >
                     <FaArrowLeft />
                     Go Back
-                </button>
+                </motion.button>
 
-                <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+                <motion.div 
+                    className="bg-white rounded-lg shadow-lg overflow-hidden"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.1 }}
+                >
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-6 md:p-10">
                         {/* Product Image */}
-                        <div className="flex items-center justify-center">
+                        <motion.div 
+                            className="flex items-center justify-center"
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ duration: 0.5, delay: 0.2 }}
+                        >
                             <div className="relative w-full aspect-square rounded-lg overflow-hidden bg-gray-200">
                                 <img
                                     src={product.image || 'https://via.placeholder.com/500x500?text=No+Image'}
@@ -164,18 +183,33 @@ const ProductDetails = () => {
                                     </div>
                                 )}
                             </div>
-                        </div>
+                        </motion.div>
 
                         {/* Product Info */}
-                        <div className="flex flex-col justify-between">
+                        <motion.div 
+                            className="flex flex-col justify-between"
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.5, delay: 0.3 }}
+                        >
                             {/* Header */}
                             <div>
-                                <h1 className="text-4xl font-bold text-gray-900 mb-2">
+                                <motion.h1 
+                                    className="text-4xl font-bold text-gray-900 mb-2"
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    transition={{ duration: 0.5, delay: 0.4 }}
+                                >
                                     {product.itemName}
-                                </h1>
+                                </motion.h1>
                                 
                                 {/* Current Price */}
-                                <div className="mb-6 p-3 bg-linear-to-r from-emerald-100 to-teal-100 rounded-lg border-2 border-emerald-500">
+                                <motion.div 
+                                    className="mb-6 p-3 bg-linear-to-r from-emerald-100 to-teal-100 rounded-lg border-2 border-emerald-500"
+                                    initial={{ opacity: 0, scale: 0.9 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    transition={{ duration: 0.4, delay: 0.5 }}
+                                >
                                     <p className="text-xs text-gray-600 font-semibold mb-1">Current Price</p>
                                     <p className="text-2xl font-bold text-emerald-600">
                                         ৳{getLatestPrice(product)}
@@ -184,51 +218,83 @@ const ProductDetails = () => {
                                     <p className="text-xs text-gray-600 mt-1">
                                         {getLatestDate(product) !== 'N/A' ? new Date(getLatestDate(product)).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A'}
                                     </p>
-                                </div>
+                                </motion.div>
                                 
                                 {/* Market Info */}
-                                <div className="flex items-center gap-2 text-gray-700 mb-6">
+                                <motion.div 
+                                    className="flex items-center gap-2 text-gray-700 mb-6"
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    transition={{ duration: 0.4, delay: 0.6 }}
+                                >
                                     <FaMapMarkerAlt className="text-red-500" />
                                     <span className="text-lg font-semibold">{product.marketName}</span>
-                                </div>
+                                </motion.div>
 
                                 {/* Description */}
                                 {product.description && (
-                                    <div className="mb-6">
+                                    <motion.div 
+                                        className="mb-6"
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        transition={{ duration: 0.5, delay: 0.7 }}
+                                    >
                                         <h3 className="text-lg font-bold text-gray-800 mb-2">Description</h3>
                                         <p className="text-gray-700 leading-relaxed">{product.description}</p>
-                                    </div>
+                                    </motion.div>
                                 )}
                             </div>
 
                             {/* Vendor Info */}
-                            <div className="bg-linear-to-r from-emerald-50 to-teal-50 p-3 rounded-lg border border-emerald-200 mt-6">
+                            <motion.div 
+                                className="bg-linear-to-r from-emerald-50 to-teal-50 p-3 rounded-lg border border-emerald-200 mt-6"
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.4, delay: 0.8 }}
+                            >
                                 <h3 className="text-sm font-bold text-gray-800 mb-2">Vendor Information</h3>
                                 <div className="flex flex-col gap-1">
-                                    <div className="flex items-center gap-2">
+                                    <motion.div 
+                                        className="flex items-center gap-2"
+                                        initial={{ opacity: 0, x: -10 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        transition={{ duration: 0.3, delay: 0.85 }}
+                                    >
                                         <FaUser className="text-emerald-600 shrink-0" />
                                         <span className="text-gray-700">{product.vendorName || 'Local Farmer'}</span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
+                                    </motion.div>
+                                    <motion.div 
+                                        className="flex items-center gap-2"
+                                        initial={{ opacity: 0, x: -10 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        transition={{ duration: 0.3, delay: 0.9 }}
+                                    >
                                         <FaEnvelope className="text-emerald-600 shrink-0" />
                                         <span className="text-gray-700">{product.vendorEmail || 'vendor@example.com'}</span>
-                                    </div>
+                                    </motion.div>
                                 </div>
-                            </div>
+                            </motion.div>
 
                             {/* Action Buttons - Right Side */}
-                            <div className="flex flex-row gap-2 mt-6">
+                            <motion.div 
+                                className="flex flex-row gap-2 mt-6"
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.5, delay: 0.95 }}
+                            >
                                 {/* Buy Button */}
-                                <button
+                                <motion.button
                                     onClick={handleBuyProduct}
                                     className="flex-1 flex items-center justify-center gap-2 bg-linear-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg text-sm"
+                                    whileHover={{ scale: 1.02 }}
+                                    whileTap={{ scale: 0.98 }}
                                 >
                                     <FaShoppingCart />
                                     Buy Product
-                                </button>
+                                </motion.button>
 
                                 {/* Watchlist Button - Disabled for admin/vendor */}
-                                <button
+                                <motion.button
                                     onClick={handleWatchlist}
                                     disabled={user && (user.role === 'admin' || user.role === 'vendor')}
                                     className={`flex-1 flex items-center justify-center gap-2 font-bold py-3 px-4 rounded-lg transition-all duration-300 shadow-md text-sm ${
@@ -238,78 +304,18 @@ const ProductDetails = () => {
                                             ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
                                             : 'bg-gray-200 hover:bg-gray-300 text-gray-800'
                                     }`}
+                                    whileHover={!user || (user.role !== 'admin' && user.role !== 'vendor') ? { scale: 1.02 } : {}}
+                                    whileTap={!user || (user.role !== 'admin' && user.role !== 'vendor') ? { scale: 0.98 } : {}}
                                 >
                                     <FaBookmark />
                                     {isWatchlisted ? 'In Watchlist' : 'Add to Watchlist'}
-                                </button>
-                            </div>
-                        </div>
+                                </motion.button>
+                            </motion.div>
+                        </motion.div>
                     </div>
-
-                    {/* Action Buttons */}
-                    <div className="bg-white p-6 md:p-10 border-t border-gray-200">
-                        {/* User Reviews/Comments Section */}
-                        <div className="pt-6">
-                            <h3 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                                <FaStar className="text-yellow-500" />
-                                User Reviews & Comments
-                            </h3>
-
-                            {/* Add Comment Form */}
-                            <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 mb-6">
-                                <h4 className="text-lg font-bold text-gray-800 mb-3">
-                                    {user ? `${user.displayName || 'You'}, add a comment` : 'Login to add a comment'}
-                                </h4>
-                                <div className="flex gap-3">
-                                    <textarea
-                                        value={newComment}
-                                        onChange={(e) => setNewComment(e.target.value)}
-                                        placeholder="Share your experience with this product..."
-                                        className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none"
-                                        rows="3"
-                                    />
-                                    <button
-                                        onClick={handleAddComment}
-                                        className="bg-linear-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 self-end whitespace-nowrap"
-                                    >
-                                        Post
-                                    </button>
-                                </div>
-                            </div>
-
-                            {/* Comments List */}
-                            <div className="space-y-4">
-                                {comments.length > 0 ? (
-                                    comments.map((comment) => (
-                                        <div key={comment.id} className="bg-white p-4 rounded-lg border border-gray-200 hover:shadow-md transition">
-                                            <div className="flex items-start gap-3">
-                                                <div className="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center text-white font-bold shrink-0">
-                                                    {comment.author.charAt(0).toUpperCase()}
-                                                </div>
-                                                <div className="flex-1">
-                                                    <div className="flex items-center justify-between mb-1">
-                                                        <h4 className="font-bold text-gray-900">{comment.author}</h4>
-                                                        <span className="text-xs text-gray-500">{comment.date}</span>
-                                                    </div>
-                                                    <div className="flex items-center gap-1 mb-2">
-                                                        {[...Array(5)].map((_, i) => (
-                                                            <FaStar key={i} className={i < comment.rating ? 'text-yellow-500' : 'text-gray-300'} size={14} />
-                                                        ))}
-                                                    </div>
-                                                    <p className="text-gray-700">{comment.text}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ))
-                                ) : (
-                                    <p className="text-center text-gray-500 py-8">No comments yet. Be the first to share your experience!</p>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                </motion.div>
             </div>
-        </div>
+        </motion.div>
     );
 };
 

@@ -7,6 +7,7 @@ import 'swiper/css/pagination';
 import 'swiper/css/effect-fade';
 import { FaArrowRight } from 'react-icons/fa';
 import { useNavigate } from 'react-router';
+import { motion } from 'framer-motion';
 
 const Banner = () => {
     const navigate = useNavigate();
@@ -90,26 +91,45 @@ const Banner = () => {
 
                             {/* Content */}
                             <div className="absolute inset-0 flex flex-col items-center justify-center text-white px-4 md:px-8">
-                                <div className="text-center max-w-2xl">
+                                <motion.div 
+                                    className="text-center max-w-2xl"
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.8 }}
+                                >
                                     {/* Title */}
-                                    <h1 className="text-4xl md:text-6xl font-bold mb-4 leading-tight drop-shadow-lg animate-fade-in">
+                                    <motion.h1 
+                                        className="text-4xl md:text-6xl font-bold mb-4 leading-tight drop-shadow-lg"
+                                        initial={{ opacity: 0, y: -20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ duration: 0.6, delay: 0.2 }}
+                                    >
                                         {slide.title}
-                                    </h1>
+                                    </motion.h1>
 
                                     {/* Subtitle */}
-                                    <p className="text-lg md:text-2xl text-gray-200 mb-8 drop-shadow-md animate-fade-in-delay">
+                                    <motion.p 
+                                        className="text-lg md:text-2xl text-gray-200 mb-8 drop-shadow-md"
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        transition={{ duration: 0.6, delay: 0.4 }}
+                                    >
                                         {slide.subtitle}
-                                    </p>
+                                    </motion.p>
 
                                     {/* CTA Button */}
-                                    <button
+                                    <motion.button
                                         onClick={handleCTA}
-                                        className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white px-8 py-4 rounded-full font-bold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-2xl group"
+                                        className="inline-flex items-center gap-2 bg-linear-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white px-8 py-4 rounded-full font-bold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-2xl group"
+                                        initial={{ opacity: 0, scale: 0.9 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        transition={{ duration: 0.6, delay: 0.6 }}
+                                        whileHover={{ scale: 1.05 }}
                                     >
                                         {slide.cta}
                                         <FaArrowRight className="group-hover:translate-x-1 transition-transform duration-300" />
-                                    </button>
-                                </div>
+                                    </motion.button>
+                                </motion.div>
                             </div>
                         </div>
                     </SwiperSlide>
