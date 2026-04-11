@@ -9,12 +9,15 @@ import useAuth from '../../hooks/useAuth';
 import { motion } from 'framer-motion';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { MdTrendingUp } from 'react-icons/md';
+import useUserRole from '../../hooks/useUserRole';
 
 const ProductDetails = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const { user } = useAuth();
+    const { role, roleLoading } = useUserRole();
     const [isWatchlisted, setIsWatchlisted] = useState(false);
+    const [watchlistLoading, setWatchlistLoading] = useState(true);
     const [newComment, setNewComment] = useState('');
     const [comments, setComments] = useState([]);
     const [editingReviewId, setEditingReviewId] = useState(null);
@@ -47,6 +50,26 @@ const ProductDetails = () => {
             setComments(reviewsData);
         }
     }, [reviewsData]);
+
+    // Fetch watchlist status
+    useEffect(() => {
+        if (user && user.uid) {
+            const fetchWatchlistStatus = async () => {
+                try {
+                    const response = await axios.get(`http://localhost:3000/api/watchlist/${user.uid}`);
+                    const watchlist = response.data;
+                    setIsWatchlisted(watchlist.products && watchlist.products.includes(id));
+                } catch (error) {
+                    console.error('Error fetching watchlist:', error);
+                } finally {
+                    setWatchlistLoading(false);
+                }
+            };
+            fetchWatchlistStatus();
+        } else {
+            setWatchlistLoading(false);
+        }
+    }, [user, id]);
 
     // Format date
     const formatDate = (dateString) => {
@@ -96,14 +119,34 @@ const ProductDetails = () => {
     };
 
     // Handle watchlist toggle
-    const handleWatchlist = () => {
+    const handleWatchlist = async () => {
         if (!user) {
             toast.error('Please login to add to watchlist');
             navigate('/login');
             return;
         }
-        setIsWatchlisted(!isWatchlisted);
-        toast.success(isWatchlisted ? 'Removed from watchlist' : 'Added to watchlist');
+
+        try {
+            if (isWatchlisted) {
+                await axios.delete(`http://localhost:3000/api/watchlist/${user.uid}/${id}`);
+                setIsWatchlisted(false);
+                toast.success('Removed from watchlist');
+            } else {
+                await axios.post('http://localhost:3000/api/watchlist', {
+                    userId: user.uid,
+                    productId: id
+                });
+                setIsWatchlisted(true);
+                toast.success('Added to watchlist');
+            }
+        } catch (error) {
+            if (error.response?.status === 409) {
+                setIsWatchlisted(true);
+                toast.error('Already in watchlist');
+            } else {
+                toast.error('Error updating watchlist');
+            }
+        }
     };
 
     // Handle buy product
@@ -449,23 +492,22 @@ const ProductDetails = () => {
                                     Buy Product
                                 </motion.button>
 
-                                {/* Watchlist Button - Disabled for admin/vendor */}
-                                <motion.button
-                                    onClick={handleWatchlist}
-                                    disabled={user && (user.role === 'admin' || user.role === 'vendor')}
-                                    className={`flex-1 flex items-center justify-center gap-2 font-bold py-3 px-4 rounded-lg transition-all duration-300 shadow-md text-sm ${
-                                        isWatchlisted
-                                            ? 'bg-yellow-500 hover:bg-yellow-600 text-white'
-                                            : user && (user.role === 'admin' || user.role === 'vendor')
-                                            ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
-                                            : 'bg-gray-200 hover:bg-gray-300 text-gray-800'
-                                    }`}
-                                    whileHover={!user || (user.role !== 'admin' && user.role !== 'vendor') ? { scale: 1.02 } : {}}
-                                    whileTap={!user || (user.role !== 'admin' && user.role !== 'vendor') ? { scale: 0.98 } : {}}
-                                >
-                                    <FaBookmark />
-                                    {isWatchlisted ? 'In Watchlist' : 'Add to Watchlist'}
-                                </motion.button>
+                                {/* Watchlist Button - Only for regular users */}
+                                {!roleLoading && role === "user" && !watchlistLoading && (
+                                    <motion.button
+                                        onClick={handleWatchlist}
+                                        className={`flex-1 flex items-center justify-center gap-2 font-bold py-3 px-4 rounded-lg transition-all duration-300 shadow-md text-sm ${
+                                            isWatchlisted
+                                                ? 'bg-yellow-500 hover:bg-yellow-600 text-white'
+                                                : 'bg-gray-200 hover:bg-gray-300 text-gray-800'
+                                        }`}
+                                        whileHover={{ scale: 1.02 }}
+                                        whileTap={{ scale: 0.98 }}
+                                    >
+                                        <FaBookmark />
+                                        {isWatchlisted ? 'In Watchlist' : 'Add to Watchlist'}
+                                    </motion.button>
+                                )}
                             </motion.div>
                         </motion.div>
                     </div>
@@ -802,3 +844,4 @@ const ProductDetails = () => {
 };
 
 export default ProductDetails;
+

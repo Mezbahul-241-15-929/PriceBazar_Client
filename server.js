@@ -165,6 +165,68 @@ app.get('/api/health', (req, res) => {
     res.json({ status: 'Server is running' });
 });
 
+// GET user's watchlist
+app.get('/api/watchlist/:userId', async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const watchlist = await db.collection('watchlist')
+            .findOne({ userId });
+        
+        res.json(watchlist || { userId, products: [] });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// POST/ADD to watchlist
+app.post('/api/watchlist', async (req, res) => {
+    try {
+        const { userId, productId } = req.body;
+
+        if (!userId || !productId) {
+            return res.status(400).json({ error: 'Missing userId or productId' });
+        }
+
+        const watchlist = await db.collection('watchlist')
+            .findOne({ userId });
+
+        if (!watchlist) {
+            const result = await db.collection('watchlist')
+                .insertOne({ userId, products: [productId], createdAt: new Date() });
+            return res.json({ message: 'Added to watchlist', _id: result.insertedId });
+        }
+
+        if (watchlist.products.includes(productId)) {
+            return res.status(409).json({ error: 'Already in watchlist' });
+        }
+
+        await db.collection('watchlist')
+            .updateOne({ userId }, { $push: { products: productId } });
+
+        res.json({ message: 'Added to watchlist' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// DELETE from watchlist
+app.delete('/api/watchlist/:userId/:productId', async (req, res) => {
+    try {
+        const { userId, productId } = req.params;
+
+        if (!userId || !productId) {
+            return res.status(400).json({ error: 'Missing userId or productId' });
+        }
+
+        await db.collection('watchlist')
+            .updateOne({ userId }, { $pull: { products: productId } });
+
+        res.json({ message: 'Removed from watchlist' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
