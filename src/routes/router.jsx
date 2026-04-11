@@ -20,6 +20,8 @@ import AddAdvertisement from "../layouts/DashBoardComponents/AddAdvertisement";
 import MyAdvertisements from "../layouts/DashBoardComponents/MyAdvertisements";
 import AllProducts from "../layouts/DashBoardComponents/AllProducts";
 import AllAdvertisements from "../layouts/DashBoardComponents/AllAdvertisements";
+import PriceTrends from "../layouts/DashBoardComponents/PriceTrends";
+import Watchlist from "../layouts/DashBoardComponents/Watchlist";
 
 export const router = createBrowserRouter([
     {
@@ -100,6 +102,14 @@ export const router = createBrowserRouter([
             {
                 path: '/dashboard/my-advertisements',
                 Component: MyAdvertisements
+            },
+            {
+                path: '/dashboard/price-trends',
+                Component: PriceTrends
+            },
+            {
+                path: '/dashboard/watchlist',
+                Component: Watchlist
             }
 
         ]

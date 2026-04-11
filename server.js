@@ -165,14 +165,35 @@ app.get('/api/health', (req, res) => {
     res.json({ status: 'Server is running' });
 });
 
-// GET user's watchlist
+// GET user's watchlist with enriched product details
 app.get('/api/watchlist/:userId', async (req, res) => {
     try {
         const { userId } = req.params;
         const watchlist = await db.collection('watchlist')
             .findOne({ userId });
         
-        res.json(watchlist || { userId, products: [] });
+        if (!watchlist || !watchlist.products || watchlist.products.length === 0) {
+            return res.json({ userId, products: [], watchlistItems: [] });
+        }
+
+        // Fetch full product details for each product ID in watchlist
+        const products = await db.collection('products')
+            .find({ _id: { $in: watchlist.products.map(id => new ObjectId(id)) } })
+            .toArray();
+
+        // Enrich products with watchlist metadata
+        const watchlistItems = products.map(product => ({
+            ...product,
+            addedDate: watchlist.createdAt || new Date()
+        }));
+
+        res.json({
+            userId,
+            products: watchlist.products,
+            watchlistItems,
+            createdAt: watchlist.createdAt,
+            itemCount: watchlistItems.length
+        });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
