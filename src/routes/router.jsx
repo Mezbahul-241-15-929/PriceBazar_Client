@@ -22,6 +22,7 @@ import AllProducts from "../layouts/DashBoardComponents/AllProducts";
 import AllAdvertisements from "../layouts/DashBoardComponents/AllAdvertisements";
 import PriceTrends from "../layouts/DashBoardComponents/PriceTrends";
 import Watchlist from "../layouts/DashBoardComponents/Watchlist";
+import Payment from "../pages/Payment/Payment";
 
 export const router = createBrowserRouter([
     {
@@ -51,6 +52,10 @@ export const router = createBrowserRouter([
             {
                 path: "/profile",
                 element: <PrivateRoute><Profile></Profile></PrivateRoute>,
+            },
+            {
+                path: "/payment/:id",
+                element: <PrivateRoute><Payment /></PrivateRoute>,
             }
         ]
 

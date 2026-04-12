@@ -156,7 +156,8 @@ const ProductDetails = () => {
             navigate('/login');
             return;
         }
-        toast.success('Product added to cart!');
+        toast.success('Proceeding to payment...');
+        navigate(`/payment/${id}`);
     };
 
     // Handle add comment
