@@ -37,6 +37,12 @@ const MyProducts = () => {
     // ✅ Delete mutation
     const deleteMutation = useMutation({
         mutationFn: async (id) => {
+            // Verify product belongs to current user
+            const product = products.find(p => p._id === id);
+            if (product && product.vendorEmail !== user.email) {
+                throw new Error('You can only delete your own products');
+            }
+            
             const res = await axiosSecure.delete(`/products/${id}`);
             return res.data;
         },
@@ -50,11 +56,24 @@ const MyProducts = () => {
             });
             refetch();
         },
+        onError: (error) => {
+            Swal.fire({
+                icon: "error",
+                title: "Error!",
+                text: error.message || "Failed to delete product",
+            });
+        }
     });
 
     // ✅ Update mutation
     const updateMutation = useMutation({
         mutationFn: async ({ id, payload }) => {
+            // Verify product belongs to current user
+            const product = products.find(p => p._id === id);
+            if (product && product.vendorEmail !== user.email) {
+                throw new Error('You can only edit your own products');
+            }
+            
             console.log("Sending PUT request with payload:", payload);
             const res = await axiosSecure.put(`/products/${id}`, payload);
             console.log("Response:", res.data);
@@ -68,7 +87,7 @@ const MyProducts = () => {
         },
         onError: (error) => {
             console.error("Update error:", error);
-            toast.error(error.response?.data?.message || "Failed to update product");
+            toast.error(error.message || error.response?.data?.message || "Failed to update product");
         },
     });
 

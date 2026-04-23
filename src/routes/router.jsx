@@ -11,6 +11,7 @@ import Login from "../pages/Auth/Login/Login";
 import Register from "../pages/Auth/Register/Register";
 import Profile from "../pages/Profile/Profile";
 import PrivateRoute from "./PrivateRoute";
+import RoleBasedRoute from "./RoleBasedRoute";
 import Profile2 from "../pages/Profile/Profile2";
 import AdminLayout from "../layouts/DashboardLayout";
 import AllUsers from "../layouts/DashBoardComponents/AllUsers";
@@ -22,40 +23,50 @@ import AllProducts from "../layouts/DashBoardComponents/AllProducts";
 import AllAdvertisements from "../layouts/DashBoardComponents/AllAdvertisements";
 import PriceTrends from "../layouts/DashBoardComponents/PriceTrends";
 import Watchlist from "../layouts/DashBoardComponents/Watchlist";
+import MyOrderList from "../layouts/DashBoardComponents/MyOrderList";
 import Payment from "../pages/Payment/Payment";
+import ErrorElement from "./ErrorElement";
 
 export const router = createBrowserRouter([
     {
         path: "/",
         Component: RootLayout,
+        errorElement: <ErrorElement />,
         children: [
             {
                 index: true,
-                Component: Home
+                Component: Home,
+                errorElement: <ErrorElement />
             },
             {
                 path: "/products",
-                Component: Products
+                Component: Products,
+                errorElement: <ErrorElement />
             },
             {
                 path: "/product-details/:id",
-                element: <PrivateRoute><ProductDetails /></PrivateRoute>
+                element: <PrivateRoute><ProductDetails /></PrivateRoute>,
+                errorElement: <ErrorElement />
             },
             {
                 path: "/about",
-                Component: About
+                Component: About,
+                errorElement: <ErrorElement />
             },
             {
                 path: "/contact",
-                Component: Contact
+                Component: Contact,
+                errorElement: <ErrorElement />
             },
             {
                 path: "/profile",
                 element: <PrivateRoute><Profile></Profile></PrivateRoute>,
+                errorElement: <ErrorElement />
             },
             {
                 path: "/payment/:product_id",
                 element: <PrivateRoute><Payment /></PrivateRoute>,
+                errorElement: <ErrorElement />
             }
         ]
 
@@ -64,14 +75,17 @@ export const router = createBrowserRouter([
     {
         path: '/',
         Component: AuthLayout,
+        errorElement: <ErrorElement />,
         children: [
             {
                 path: 'login',
-                Component: Login
+                Component: Login,
+                errorElement: <ErrorElement />
             },
             {
                 path: 'register',
-                Component: Register
+                Component: Register,
+                errorElement: <ErrorElement />
             }
         ]
     },
@@ -79,42 +93,57 @@ export const router = createBrowserRouter([
     {
         path: '/dashboard',
         Component: AdminLayout,
+        errorElement: <ErrorElement />,
         children: [
             {
                 path: '/dashboard/all-users',
-                Component: AllUsers
+                element: <RoleBasedRoute allowedRoles={['admin']}><AllUsers /></RoleBasedRoute>,
+                errorElement: <ErrorElement />
             },
             {
                 path: '/dashboard/all-product',
-                Component: AllProducts
+                element: <RoleBasedRoute allowedRoles={['admin']}><AllProducts /></RoleBasedRoute>,
+                errorElement: <ErrorElement />
             },
             {
                 path: '/dashboard/add-product',
-                Component: AddProuducts
+                element: <RoleBasedRoute allowedRoles={['vendor']}><AddProuducts /></RoleBasedRoute>,
+                errorElement: <ErrorElement />
             },
             {
                 path: '/dashboard/my-products',
-                Component: MyProducts
+                element: <RoleBasedRoute allowedRoles={['vendor']}><MyProducts /></RoleBasedRoute>,
+                errorElement: <ErrorElement />
             },
             {
                 path: '/dashboard/all-ads',
-                Component: AllAdvertisements
+                element: <RoleBasedRoute allowedRoles={['admin']}><AllAdvertisements /></RoleBasedRoute>,
+                errorElement: <ErrorElement />
             },
             {
                 path: '/dashboard/add-advertisement',
-                Component: AddAdvertisement
+                element: <RoleBasedRoute allowedRoles={['vendor']}><AddAdvertisement /></RoleBasedRoute>,
+                errorElement: <ErrorElement />
             },
             {
                 path: '/dashboard/my-advertisements',
-                Component: MyAdvertisements
+                element: <RoleBasedRoute allowedRoles={['vendor']}><MyAdvertisements /></RoleBasedRoute>,
+                errorElement: <ErrorElement />
             },
             {
                 path: '/dashboard/price-trends',
-                Component: PriceTrends
+                element: <RoleBasedRoute allowedRoles={['user']}><PriceTrends /></RoleBasedRoute>,
+                errorElement: <ErrorElement />
             },
             {
                 path: '/dashboard/watchlist',
-                Component: Watchlist
+                element: <RoleBasedRoute allowedRoles={['user']}><Watchlist /></RoleBasedRoute>,
+                errorElement: <ErrorElement />
+            },
+            {
+                path: '/dashboard/my-orders',
+                element: <RoleBasedRoute allowedRoles={['user']}><MyOrderList /></RoleBasedRoute>,
+                errorElement: <ErrorElement />
             }
 
         ]

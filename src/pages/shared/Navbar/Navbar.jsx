@@ -1,4 +1,4 @@
-import { Link, NavLink } from 'react-router';
+import { Link, NavLink, useNavigate } from 'react-router';
 import { FiMenu, FiX, FiHome, FiShoppingCart, FiInfo, FiMail, FiUser, FiSettings, FiLogOut } from 'react-icons/fi';
 import { AiOutlineUser } from 'react-icons/ai';
 import { useState } from 'react';
@@ -12,6 +12,7 @@ import useAuth from '../../../hooks/useAuth';
 const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const { user, logOut } = useAuth();
+    const navigate = useNavigate();
 
     // const { data: profile } = useQuery({
     //     queryKey: ["profile", user?.email],
@@ -25,6 +26,7 @@ const Navbar = () => {
     const handleSignOut = () => {
         logOut().then(() => {
             console.log('singed out user')
+            navigate('/login');
         })
             .catch(error => {
                 console.log(error)
