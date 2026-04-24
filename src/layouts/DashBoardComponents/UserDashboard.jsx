@@ -41,13 +41,16 @@ const UserDashboard = () => {
 
     // Fetch watchlist count
     const { data: watchlistCount = 0 } = useQuery({
-        queryKey: ['watchlistCount', user?.email],
-        enabled: !!user?.email,
+        queryKey: ['watchlistCount', user?.uid],
+        enabled: !!user?.uid,
         queryFn: async () => {
             try {
-                const response = await axiosSecure.get(`/watchlist/${user.email}`);
-                return Array.isArray(response.data) ? response.data.length : 0;
+                // Backend uses /api/watchlist/:userId (mapped to user.uid in watchlist page)
+                const response = await axiosSecure.get(`/api/watchlist/${user.uid}`);
+                // The structure is { userId, products: [] }
+                return response.data?.products?.length || 0;
             } catch (error) {
+                console.error('Watchlist fetch error:', error);
                 return 0;
             }
         },
@@ -102,20 +105,30 @@ const UserDashboard = () => {
             label: 'Watchlist Items',
             value: watchlistCount,
             icon: '❤️',
-            bgGradient: 'from-pink-500 to-pink-600'
+            bgGradient: 'from-pink-500 to-pink-600',
+            path: '/dashboard/watchlist'
         }
     ];
 
     return (
         <div className="p-4 md:p-8">
             {/* Header */}
-            <div className="mb-8">
-                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
-                    🎯 Your Dashboard
-                </h1>
-                <p className="text-gray-600">
-                    Welcome back, {user?.displayName || 'User'}! Here's your shopping overview.
-                </p>
+            <div className="mb-8 flex justify-between items-center">
+                <div>
+                    <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+                        🎯 Your Dashboard
+                    </h1>
+                    <p className="text-gray-600">
+                        Welcome back, {user?.displayName || 'User'}! Here's your shopping overview.
+                    </p>
+                </div>
+                <button 
+                   onClick={() => refetch()} 
+                   className="btn btn-ghost btn-sm text-gray-400 hover:text-emerald-500"
+                   title="Refresh stats"
+                >
+                    🔄 Refresh
+                </button>
             </div>
 
             {/* Stats Grid */}
@@ -123,7 +136,8 @@ const UserDashboard = () => {
                 {statCards.map((card, idx) => (
                     <div
                         key={idx}
-                        className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden"
+                        onClick={() => card.path && navigate(card.path)}
+                        className={`bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden ${card.path ? 'cursor-pointer hover:-translate-y-1' : ''}`}
                     >
                         <div className={`bg-gradient-to-r ${card.bgGradient} p-6 text-white`}>
                             <div className="flex justify-between items-start mb-4">
