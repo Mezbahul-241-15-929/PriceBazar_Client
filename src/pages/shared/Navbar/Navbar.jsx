@@ -1,5 +1,5 @@
 import { Link, NavLink, useNavigate } from 'react-router';
-import { FiMenu, FiX, FiHome, FiShoppingCart, FiInfo, FiMail, FiUser, FiSettings, FiLogOut } from 'react-icons/fi';
+import { FiMenu, FiX, FiHome, FiShoppingCart, FiUser, FiLogOut } from 'react-icons/fi';
 import { AiOutlineUser } from 'react-icons/ai';
 import { useState } from 'react';
 import useAuth from '../../../hooks/useAuth';
@@ -59,20 +59,6 @@ const Navbar = () => {
                 className={({ isActive }) => getLinkClass(isActive)}
             >
                 <FiShoppingCart size={18} /> Products
-            </NavLink>
-            <NavLink
-                to='/about'
-                onClick={() => setIsMenuOpen(false)}
-                className={({ isActive }) => getLinkClass(isActive)}
-            >
-                <FiInfo size={18} /> About
-            </NavLink>
-            <NavLink
-                to='/contact'
-                onClick={() => setIsMenuOpen(false)}
-                className={({ isActive }) => getLinkClass(isActive)}
-            >
-                <FiMail size={18} /> Contact
             </NavLink>
         </>
     );
@@ -138,11 +124,6 @@ const Navbar = () => {
                                             <li>
                                                 <NavLink to="/profile" className="flex items-center gap-2 px-3 py-2 rounded hover:bg-gray-50">
                                                     <FiUser /> Profile
-                                                </NavLink>
-                                            </li>
-                                            <li>
-                                                <NavLink to="/settings" className="flex items-center gap-2 px-3 py-2 rounded hover:bg-gray-50">
-                                                    <FiSettings /> Settings
                                                 </NavLink>
                                             </li>
                                             <li>

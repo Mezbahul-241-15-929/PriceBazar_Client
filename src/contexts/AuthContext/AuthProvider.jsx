@@ -9,6 +9,7 @@ const googleProvider = new GoogleAuthProvider();
 const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [token, setToken] = useState(null);
 
     const registerUser = (email, password) => {
         setLoading(true);
@@ -27,6 +28,9 @@ const AuthProvider = ({ children }) => {
 
     const logOut = () => {
         setLoading(true);
+        // Clear token from localStorage
+        localStorage.removeItem('access_token');
+        setToken(null);
         return signOut(auth);
     }
 
@@ -34,10 +38,52 @@ const AuthProvider = ({ children }) => {
         return updateProfile(auth.currentUser, profile)
     }
 
+    // Function to generate JWT token
+    const generateToken = async (email, uid) => {
+        try {
+            const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/jwt`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, uid })
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to generate token');
+            }
+
+            const data = await response.json();
+            
+            // Store token in localStorage
+            localStorage.setItem('access_token', data.token);
+            setToken(data.token);
+            
+            return data.token;
+        } catch (error) {
+            console.error('Error generating JWT token:', error);
+            throw error;
+        }
+    }
+
     // observe user state
     useEffect(() => {
-        const unSubscribe = onAuthStateChanged(auth, (currentUser) => {
+        const unSubscribe = onAuthStateChanged(auth, async (currentUser) => {
             setUser(currentUser);
+            
+            if (currentUser) {
+                try {
+                    // Generate JWT token for the user
+                    await generateToken(currentUser.email, currentUser.uid);
+                } catch (error) {
+                    console.error('Error generating token on auth state change:', error);
+                }
+            } else {
+                // Clear token when user logs out
+                localStorage.removeItem('access_token');
+                setToken(null);
+            }
+            
             setLoading(false);
             console.log(currentUser)
         })
@@ -49,11 +95,13 @@ const AuthProvider = ({ children }) => {
     const authInfo = {
         user,
         loading,
+        token,
         registerUser,
         signInUser,
         signInGoogle,
         logOut,
-        updateUserProfile
+        updateUserProfile,
+        generateToken
     }
 
     return (

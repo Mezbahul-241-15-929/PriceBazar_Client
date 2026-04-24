@@ -48,15 +48,37 @@ const Products = () => {
     const { data: products = [], isLoading, error, refetch } = useQuery({
         queryKey: ['allProducts', sortBy, dateFrom, dateTo, searchTerm],
         queryFn: async () => {
-            const queryString = buildQueryString();
-            const response = await axios.get(`http://localhost:3000/api/products/all?${queryString}`);
+            const response = await axios.get(`http://localhost:3000/products/all`);
             let filteredProducts = response.data;
             
-            // Apply search filter on frontend
+            // Filter by "approved" status if the backend doesn't already
+            filteredProducts = filteredProducts.filter(p => p.status === 'approved');
+
+            // Apply search filter
             if (searchTerm.trim()) {
                 filteredProducts = filteredProducts.filter(product =>
                     product.itemName.toLowerCase().includes(searchTerm.toLowerCase())
                 );
+            }
+
+            // Apply date filters if set
+            if (dateFrom || dateTo) {
+                filteredProducts = filteredProducts.filter(product => {
+                    const productDate = new Date(getLatestDate(product));
+                    if (dateFrom && productDate < new Date(dateFrom)) return false;
+                    if (dateTo && productDate > new Date(dateTo)) return false;
+                    return true;
+                });
+            }
+
+            // Apply Sorting (Client-side)
+            if (sortBy === 'priceLow') {
+                filteredProducts.sort((a, b) => getLatestPrice(a) - getLatestPrice(b));
+            } else if (sortBy === 'priceHigh') {
+                filteredProducts.sort((a, b) => getLatestPrice(b) - getLatestPrice(a));
+            } else {
+                // Latest first
+                filteredProducts.sort((a, b) => new Date(getLatestDate(b)) - new Date(getLatestDate(a)));
             }
             
             return filteredProducts;

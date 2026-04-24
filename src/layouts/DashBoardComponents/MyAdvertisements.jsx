@@ -151,16 +151,16 @@ const MyAdvertisements = () => {
             <div className="bg-white shadow-lg rounded-2xl overflow-hidden border border-gray-100">
                 <div className="overflow-x-auto w-full">
 
-                    <table className="w-full text-sm">
+                    <table className="w-full text-sm min-w-max">
 
-                        <thead className="bg-gradient-to-r from-blue-500 to-purple-600 text-white">
+                        <thead className="bg-gradient-to-r from-blue-500 to-purple-600 text-white sticky top-0">
                             <tr>
-                                <th className="py-3 px-4 text-left">#</th>
-                                <th className="py-3 px-4 text-left">Ad Title</th>
-                                <th className="py-3 px-4 text-left">Description</th>
-                                <th className="py-3 px-4 text-left">Image</th>
-                                <th className="py-3 px-4 text-left">Status</th>
-                                <th className="py-3 px-4 text-left">Actions</th>
+                                <th className="py-3 px-3 text-left whitespace-nowrap w-12">#</th>
+                                <th className="py-3 px-3 text-left whitespace-nowrap min-w-32">Ad Title</th>
+                                <th className="py-3 px-3 text-left whitespace-nowrap min-w-40">Description</th>
+                                <th className="py-3 px-3 text-left whitespace-nowrap w-16">Image</th>
+                                <th className="py-3 px-3 text-left whitespace-nowrap w-24">Status</th>
+                                <th className="py-3 px-3 text-left whitespace-nowrap min-w-32">Actions</th>
                             </tr>
                         </thead>
 
@@ -178,22 +178,22 @@ const MyAdvertisements = () => {
                                             key={ad._id}
                                             className="border-b border-gray-100 hover:bg-gray-50 transition"
                                         >
-                                            <td className="py-3 px-4 text-gray-600">
+                                            <td className="py-3 px-3 text-gray-600 whitespace-nowrap">
                                                 {idx + 1}
                                             </td>
 
                                             {/* Ad Title */}
-                                            <td className="py-3 px-4 font-semibold text-gray-800">
+                                            <td className="py-3 px-3 font-semibold text-gray-800 whitespace-nowrap overflow-hidden text-ellipsis max-w-xs">
                                                 {ad.adTitle}
                                             </td>
 
                                             {/* Description */}
-                                            <td className="py-3 px-4 text-gray-600 truncate">
+                                            <td className="py-3 px-3 text-gray-600 max-w-xs overflow-hidden text-ellipsis" title={ad.shortDescription}>
                                                 {ad.shortDescription}
                                             </td>
 
                                             {/* Image */}
-                                            <td className="py-3 px-4">
+                                            <td className="py-3 px-3 whitespace-nowrap">
                                                 {ad.image ? (
                                                     <img
                                                         src={ad.image}
@@ -201,13 +201,13 @@ const MyAdvertisements = () => {
                                                         className="w-12 h-12 rounded object-cover"
                                                     />
                                                 ) : (
-                                                    <span className="text-gray-400">No image</span>
+                                                    <span className="text-gray-400 text-xs">No image</span>
                                                 )}
                                             </td>
 
                                             {/* Status */}
-                                            <td className="py-3 px-4">
-                                                <span className={`px-3 py-1 rounded-full text-xs font-semibold ${ad.status === "approved"
+                                            <td className="py-3 px-3 whitespace-nowrap">
+                                                <span className={`px-2 py-1 rounded-full text-xs font-semibold ${ad.status === "approved"
                                                     ? "bg-green-100 text-green-700"
                                                     : ad.status === "rejected"
                                                     ? "bg-red-100 text-red-700"
@@ -218,24 +218,26 @@ const MyAdvertisements = () => {
                                             </td>
 
                                             {/* Actions */}
-                                            <td className="py-3 px-4 flex gap-2">
+                                            <td className="py-3 px-3 whitespace-nowrap">
+                                                <div className="flex gap-1">
 
-                                                {/* Edit */}
-                                                <button
-                                                    onClick={() => handleEditOpen(ad)}
-                                                    className="px-3 py-1 bg-blue-500 text-white rounded-lg text-xs hover:bg-blue-600"
-                                                >
-                                                    Edit
-                                                </button>
+                                                    {/* Edit */}
+                                                    <button
+                                                        onClick={() => handleEditOpen(ad)}
+                                                        className="px-2 py-1 bg-blue-500 text-white rounded text-xs hover:bg-blue-600 transition"
+                                                    >
+                                                        Edit
+                                                    </button>
 
-                                                {/* Delete */}
-                                                <button
-                                                    onClick={() => handleDelete(ad._id)}
-                                                    className="px-3 py-1 bg-red-500 text-white rounded-lg text-xs hover:bg-red-600"
-                                                >
-                                                    Delete
-                                                </button>
+                                                    {/* Delete */}
+                                                    <button
+                                                        onClick={() => handleDelete(ad._id)}
+                                                        className="px-2 py-1 bg-red-500 text-white rounded text-xs hover:bg-red-600 transition"
+                                                    >
+                                                        Delete
+                                                    </button>
 
+                                                </div>
                                             </td>
                                         </tr>
                                     );

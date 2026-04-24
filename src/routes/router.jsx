@@ -4,8 +4,6 @@ import { Component } from "react";
 import Home from "../pages/Home/Home/Home";
 import Products from "../pages/Products/Products";
 import ProductDetails from "../pages/Products/ProductDetails";
-import About from "../pages/About/About";
-import Contact from "../pages/Contact/Contact";
 import AuthLayout from "../layouts/AuthLayout";
 import Login from "../pages/Auth/Login/Login";
 import Register from "../pages/Auth/Register/Register";
@@ -51,16 +49,6 @@ export const router = createBrowserRouter([
             {
                 path: "/product-details/:id",
                 element: <PrivateRoute><ProductDetails /></PrivateRoute>,
-                errorElement: <ErrorElement />
-            },
-            {
-                path: "/about",
-                Component: About,
-                errorElement: <ErrorElement />
-            },
-            {
-                path: "/contact",
-                Component: Contact,
                 errorElement: <ErrorElement />
             },
             {
