@@ -14,7 +14,7 @@ const SocialLogin = () => {
         signInGoogle()
             .then(result => {
                 console.log(result.user);
-                navigate(location.state || '/');
+                navigate('/', { replace: true });
                 
 
                 // create user in the database

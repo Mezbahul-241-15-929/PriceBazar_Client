@@ -43,7 +43,9 @@ const MyProducts = () => {
                 throw new Error('You can only delete your own products');
             }
             
-            const res = await axiosSecure.delete(`/products/${id}`);
+            const res = await axiosSecure.delete(`/products/${id}`, {
+                data: { vendorEmail: user.email }
+            });
             return res.data;
         },
         onSuccess: () => {

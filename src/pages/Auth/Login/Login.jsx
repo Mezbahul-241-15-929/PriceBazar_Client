@@ -18,7 +18,8 @@ const Login = () => {
         signInUser(data.email, data.password)
             .then(result => {
                 console.log(result.user)
-                navigate(location?.state || '/')
+                // Navigate to home page after successful login
+                navigate('/', { replace: true })
             })
             .catch(error => {
                 console.log(error)

@@ -14,6 +14,10 @@ import PrivateRoute from "./PrivateRoute";
 import RoleBasedRoute from "./RoleBasedRoute";
 import Profile2 from "../pages/Profile/Profile2";
 import AdminLayout from "../layouts/DashboardLayout";
+import Dashboard from "../layouts/DashBoardComponents/Dashboard";
+import AdminDashboard from "../layouts/DashBoardComponents/AdminDashboard";
+import VendorDashboard from "../layouts/DashBoardComponents/VendorDashboard";
+import UserDashboard from "../layouts/DashBoardComponents/UserDashboard";
 import AllUsers from "../layouts/DashBoardComponents/AllUsers";
 import AddProuducts from "../layouts/DashBoardComponents/AddProuduct";
 import MyProducts from "../layouts/DashBoardComponents/MyProducts";
@@ -21,6 +25,7 @@ import AddAdvertisement from "../layouts/DashBoardComponents/AddAdvertisement";
 import MyAdvertisements from "../layouts/DashBoardComponents/MyAdvertisements";
 import AllProducts from "../layouts/DashBoardComponents/AllProducts";
 import AllAdvertisements from "../layouts/DashBoardComponents/AllAdvertisements";
+import AllOrders from "../layouts/DashBoardComponents/AllOrders";
 import PriceTrends from "../layouts/DashBoardComponents/PriceTrends";
 import Watchlist from "../layouts/DashBoardComponents/Watchlist";
 import MyOrderList from "../layouts/DashBoardComponents/MyOrderList";
@@ -96,6 +101,11 @@ export const router = createBrowserRouter([
         errorElement: <ErrorElement />,
         children: [
             {
+                index: true,
+                element: <PrivateRoute><Dashboard /></PrivateRoute>,
+                errorElement: <ErrorElement />
+            },
+            {
                 path: '/dashboard/all-users',
                 element: <RoleBasedRoute allowedRoles={['admin']}><AllUsers /></RoleBasedRoute>,
                 errorElement: <ErrorElement />
@@ -118,6 +128,11 @@ export const router = createBrowserRouter([
             {
                 path: '/dashboard/all-ads',
                 element: <RoleBasedRoute allowedRoles={['admin']}><AllAdvertisements /></RoleBasedRoute>,
+                errorElement: <ErrorElement />
+            },
+            {
+                path: '/dashboard/all-orders',
+                element: <RoleBasedRoute allowedRoles={['admin']}><AllOrders /></RoleBasedRoute>,
                 errorElement: <ErrorElement />
             },
             {
