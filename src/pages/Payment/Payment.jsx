@@ -229,7 +229,7 @@ const Payment = () => {
         queryKey: ['product', product_id],
         queryFn: async () => {
             try {
-                const response = await axios.get(`http://localhost:3000/api/products/${product_id}`);
+                const response = await axios.get(`${import.meta.env.VITE_SERVER_URL || 'https://price-bazar-server.vercel.app'}/api/products/${product_id}`);
                 return response.data;
             } catch (err) {
                 toast.error('Failed to load product');

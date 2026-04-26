@@ -16,7 +16,7 @@ const ProductSection = () => {
         queryKey: ['homeProducts'],
         queryFn: async () => {
             const response = await axios.get(
-                'http://localhost:3000/api/products/all?status=approved&sort=latest&order=desc'
+                `${import.meta.env.VITE_SERVER_URL || 'https://price-bazar-server.vercel.app'}/api/products/all?status=approved&sort=latest&order=desc`
             );
             // Limit to 6 products on frontend if needed
             return response.data.slice(0, 6);

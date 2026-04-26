@@ -33,7 +33,7 @@ const WatchlistPage = () => {
 
             // Step 1: Get watchlist with product IDs
             const watchlistResponse = await axios.get(
-                `http://localhost:3000/api/watchlist/${user.uid}`
+                `${import.meta.env.VITE_SERVER_URL || 'https://price-bazar-server.vercel.app'}/api/watchlist/${user.uid}`
             );
 
             console.log('📦 Watchlist API Response:', watchlistResponse.data);
@@ -52,7 +52,7 @@ const WatchlistPage = () => {
 
             // Step 2: Fetch full product details for each product ID
             const productsPromises = watchlist.products.map(productId => 
-                axios.get(`http://localhost:3000/api/products/${productId}`)
+                axios.get(`${import.meta.env.VITE_SERVER_URL || 'https://price-bazar-server.vercel.app'}/api/products/${productId}`)
                     .catch(err => {
                         console.error(`❌ Failed to fetch product ${productId}:`, err.message);
                         return null;

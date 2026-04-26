@@ -31,7 +31,7 @@ const ProductDetails = () => {
     const { data: product = {}, isLoading, error } = useQuery({
         queryKey: ['productDetails', id],
         queryFn: async () => {
-            const response = await axios.get(`http://localhost:3000/api/products/${id}`);
+            const response = await axios.get(`${import.meta.env.VITE_SERVER_URL || 'https://price-bazar-server.vercel.app'}/api/products/${id}`);
             return response.data;
         },
     });
@@ -40,7 +40,7 @@ const ProductDetails = () => {
     const { data: reviewsData = [] } = useQuery({
         queryKey: ['reviews', id],
         queryFn: async () => {
-            const response = await axios.get(`http://localhost:3000/api/reviews/${id}`);
+            const response = await axios.get(`${import.meta.env.VITE_SERVER_URL || 'https://price-bazar-server.vercel.app'}/api/reviews/${id}`);
             return response.data;
         },
     });
@@ -56,7 +56,7 @@ const ProductDetails = () => {
         if (user && user.uid) {
             const fetchWatchlistStatus = async () => {
                 try {
-                    const response = await axios.get(`http://localhost:3000/api/watchlist/${user.uid}`);
+                    const response = await axios.get(`${import.meta.env.VITE_SERVER_URL || 'https://price-bazar-server.vercel.app'}/api/watchlist/${user.uid}`);
                     const watchlist = response.data;
                     setIsWatchlisted(watchlist.products && watchlist.products.includes(id));
                 } catch (error) {
@@ -128,11 +128,11 @@ const ProductDetails = () => {
 
         try {
             if (isWatchlisted) {
-                await axios.delete(`http://localhost:3000/api/watchlist/${user.uid}/${id}`);
+                await axios.delete(`${import.meta.env.VITE_SERVER_URL || 'https://price-bazar-server.vercel.app'}/api/watchlist/${user.uid}/${id}`);
                 setIsWatchlisted(false);
                 toast.success('Removed from watchlist');
             } else {
-                await axios.post('http://localhost:3000/api/watchlist', {
+                await axios.post(`${import.meta.env.VITE_SERVER_URL || 'https://price-bazar-server.vercel.app'}/api/watchlist`, {
                     userId: user.uid,
                     productId: id
                 });
@@ -188,7 +188,7 @@ const ProductDetails = () => {
                 rating: userRating
             };
 
-            const response = await axios.post('http://localhost:3000/api/reviews', reviewData);
+            const response = await axios.post(`${import.meta.env.VITE_SERVER_URL || 'https://price-bazar-server.vercel.app'}/api/reviews`, reviewData);
             
             if (response.data) {
                 setComments([response.data, ...comments]);
@@ -218,7 +218,7 @@ const ProductDetails = () => {
         }
 
         try {
-            const response = await axios.put(`http://localhost:3000/api/reviews/${editingReviewId}`, {
+            const response = await axios.put(`${import.meta.env.VITE_SERVER_URL || 'https://price-bazar-server.vercel.app'}/api/reviews/${editingReviewId}`, {
                 email: user.email,
                 text: editingText,
                 rating: editingRating
@@ -237,7 +237,7 @@ const ProductDetails = () => {
 
     const handleDeleteReview = async (reviewId) => {
         try {
-            await axios.delete(`http://localhost:3000/api/reviews/${reviewId}`, {
+            await axios.delete(`${import.meta.env.VITE_SERVER_URL || 'https://price-bazar-server.vercel.app'}/api/reviews/${reviewId}`, {
                 data: { email: user.email }
             });
             setComments(comments.filter(c => c._id !== reviewId));

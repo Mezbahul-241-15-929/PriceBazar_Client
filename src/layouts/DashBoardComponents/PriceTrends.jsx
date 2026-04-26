@@ -21,7 +21,7 @@ const PriceTrends = () => {
         try {
             setLoading(true);
             // Fetch products from API
-            const response = await axios.get('http://localhost:3000/products');
+            const response = await axios.get(`${import.meta.env.VITE_SERVER_URL || 'https://price-bazar-server.vercel.app'}/products`);
             const products = response.data;
             
             // Filter products with price history

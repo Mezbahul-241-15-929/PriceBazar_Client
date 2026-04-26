@@ -48,7 +48,7 @@ const Products = () => {
     const { data: products = [], isLoading, error, refetch } = useQuery({
         queryKey: ['allProducts', sortBy, dateFrom, dateTo, searchTerm],
         queryFn: async () => {
-            const response = await axios.get(`http://localhost:3000/products/all`);
+            const response = await axios.get(`${import.meta.env.VITE_SERVER_URL || 'https://price-bazar-server.vercel.app'}/products/all`);
             let filteredProducts = response.data;
             
             // Filter by "approved" status if the backend doesn't already

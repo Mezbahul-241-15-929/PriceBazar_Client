@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const axiosSecure = axios.create({
-    baseURL: 'http://localhost:3000'
+    baseURL: import.meta.env.VITE_SERVER_URL || 'https://price-bazar-server.vercel.app'
 })
 
 const useAxiosSecure = () => {
